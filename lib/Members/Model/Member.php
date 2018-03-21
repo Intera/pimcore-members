@@ -7,6 +7,7 @@ use Pimcore\Model\Object\Concrete;
 use Pimcore\Model\Object\Folder;
 use Pimcore\Model\Document\Email;
 use Members\Model\Configuration;
+use Pimcore\Model\WebsiteSetting;
 
 class Member extends Concrete {
 
@@ -143,23 +144,42 @@ class Member extends Concrete {
         $this->setResetHash($this->createHash());
         $this->save();
 
-        $doc = Email::getByPath( Configuration::getLocalizedPath('emails.passwordReset') );
 
-        if (!$doc)
-        {
-            throw new \Exception('No password reset email template defined');
+        $settings = WebsiteSetting::getByName('emailForPasswordReset');
+
+        $configDocument = \Pimcore\Model\Document::getById($settings->getData());
+        $folder = $configDocument->getPath();
+        $lang = strtoupper($this->getDebtor()->getCountryregioncode());
+        $fullPath = $folder . $lang;
+        $emailTemplate = \Pimcore\Model\Document::getByPath($fullPath);
+
+        if (!$emailTemplate){
+            throw new Exception('No order confirmation for language ' . $lang);
         }
+
+        $mail = new \Pimcore\Mail();
+        $mail->setDocument($emailTemplate->getId());
+
 
         /** @var \Zend_Controller_Request_Http $request */
         $request = \Zend_Controller_Front::getInstance()->getRequest();
         $email = new \Pimcore\Mail();
         $email->addTo($this->getEmail());
-        $email->setDocument($doc);
-        $email->setParams([
-            'host' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
-            'member_id' => $this->getId(),
-        ]);
+        $email->setDocument($emailTemplate->getId());
 
+        $url = sprintf('%s://%s', $request->getScheme(), $request->getHttpHost())
+            . '/de/members/password-reset?hash='
+            .  $this->getResetHash();
+
+        $params = [
+            'host' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
+            'url' => $url,
+            'member_id' => $this->getId(),
+            'firstname' => $this->getFirstname(),
+            'lastname' => $this->getLastname(),
+        ];
+
+        $email->setParams($params);
         $email->send();
 
         return $this;
