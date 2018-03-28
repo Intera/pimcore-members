@@ -33,6 +33,9 @@ class Members_AuthController extends Action
         }
         else if ($loginData['error'] === FALSE )
         {
+            $user = $this->auth->getIdentity()->getId();
+            \Pimcore::getEventManager()->trigger('members.action.login', null, ['identity' => $user]);
+
             if( !empty( $loginData['redirect'] ) )
             {
                 $this->redirect( $loginData['redirect'] );
@@ -52,6 +55,7 @@ class Members_AuthController extends Action
 
         $loginData = $this->parseLoginAction();
 
+
         if ($loginData['error'] === TRUE && $loginData['message'] === 'ALREADY_LOGGED_IN')
         {
             $this->redirect($loginData['redirect']);
@@ -62,6 +66,9 @@ class Members_AuthController extends Action
         }
         else if ($loginData['error'] === FALSE )
         {
+            $user = $this->auth->getIdentity()->getId();
+            \Pimcore::getEventManager()->trigger('members.action.login', null, ['identity' => $user]);
+
             if( !empty( $loginData['redirect'] ) )
             {
                 $this->redirect( $loginData['redirect'] );
@@ -110,6 +117,10 @@ class Members_AuthController extends Action
                 )
             );
         }
+
+        $user = $this->auth->getIdentity()->getId();
+        \Pimcore::getEventManager()->trigger('members.action.login', null, ['identity' => $user]);
+
 
         $this->_helper->json(array(
             'success'       => !$loginData['error'],
@@ -191,14 +202,20 @@ class Members_AuthController extends Action
             $redirect = $this->_getParam('origin');
         }
 
+        $user = $this->auth->getIdentity()->getId();
+        \Pimcore::getEventManager()->trigger('members.action.login', null, ['identity' => $user]);
+
+
         return array('error' => $error, 'message' => $message, 'redirect' => $redirect);
 
     }
 
     public function logoutAction()
     {
+        $user = $this->auth->getIdentity()->getId();
+        \Pimcore::getEventManager()->trigger('members.action.logout', null, ['identity' => $user]);
+
         $this->auth->clearIdentity();
-        \Pimcore::getEventManager()->trigger('members.action.logout');
 
         $this->redirect(Configuration::getLocalizedPath('routes.login'));
     }
