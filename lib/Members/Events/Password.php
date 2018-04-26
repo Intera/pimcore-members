@@ -52,22 +52,19 @@ class Password
                     return sha1($v) === $member->getPassword();
                 }),
                 'presence' => 'required',
-                'messages' => 'current password is incorrect',
-                'messages' => 'Password do not match'
+                'messages' => 'current password is incorrect'
             ],
             'password' => [
                 new \Zend_Validate_StringLength(6),
                 'PasswordStrength',
                 'presence' => 'required',
-                'messages' => 'Password do not match'
             ],
             'password_confirm' => [
                 new \Zend_Validate_Callback(function ($v) use ($data) {
                     return $v === $data['password'];
                 }),
                 'presence' => 'required',
-                'messages' => 'Password do not match',
-
+                'messages' => 'Password do not match'
             ],
         ], $data, [
             \Zend_Filter_Input::VALIDATOR_NAMESPACE => 'Members_Validate',
