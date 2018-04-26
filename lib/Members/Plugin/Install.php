@@ -42,7 +42,7 @@ class Install {
         Configuration::set('routes.confirm', '/%lang/members/confirm');
         Configuration::set('routes.passwordRequest', '/%lang/members/password-request');
         Configuration::set('routes.passwordReset', '/%lang/members/password-reset');
-        Configuration::set('routes.login.redirectAfterSuccess', '/%lang/members');
+        Configuration::set('routes.login.redirectAfterSuccess', '/%lang/user/profile');
 
         Configuration::set('emails.registerConfirm', '/%lang/members/emails/register-confirm');
         Configuration::set('emails.registerNotification', '/%lang/members/emails/register-notification');
