@@ -52,6 +52,7 @@ class Members_AuthController extends Action
 
         $loginData = $this->parseLoginAction();
 
+
         if ($loginData['error'] === TRUE && $loginData['message'] === 'ALREADY_LOGGED_IN')
         {
             $this->redirect($loginData['redirect']);
@@ -62,6 +63,7 @@ class Members_AuthController extends Action
         }
         else if ($loginData['error'] === FALSE )
         {
+
             if( !empty( $loginData['redirect'] ) )
             {
                 $this->redirect( $loginData['redirect'] );
@@ -166,6 +168,9 @@ class Members_AuthController extends Action
                             $redirect =  Configuration::getLocalizedPath('routes.profile');
                         }
 
+                        $user = $this->auth->getIdentity()->getId();
+                        \Pimcore::getEventManager()->trigger('members.action.login', null, ['identity' => $user]);
+
                         $message = 'You\'ve been successfully logged in';
                     }
                     else
@@ -197,8 +202,10 @@ class Members_AuthController extends Action
 
     public function logoutAction()
     {
+        $user = $this->auth->getIdentity()->getId();
+        \Pimcore::getEventManager()->trigger('members.action.logout', null, ['identity' => $user]);
+
         $this->auth->clearIdentity();
-        \Pimcore::getEventManager()->trigger('members.action.logout');
 
         $this->redirect(Configuration::getLocalizedPath('routes.login'));
     }
