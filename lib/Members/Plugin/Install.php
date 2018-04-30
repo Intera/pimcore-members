@@ -36,7 +36,7 @@ class Install {
         Configuration::set('routes.login', '/%lang/members/login');
         Configuration::set('routes.logout', '/%lang/members/logout');
         Configuration::set('routes.register', '/%lang/members/register');
-        Configuration::set('routes.profile', '/%lang/members');
+        Configuration::set('routes.profile', '/%lang/user/profile');
         Configuration::set('routes.profile.update', '/%lang/members/update-profile');
         Configuration::set('routes.profile.changePassword', '/%lang/members/password-change');
         Configuration::set('routes.confirm', '/%lang/members/confirm');
