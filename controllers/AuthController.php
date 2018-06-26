@@ -207,6 +207,13 @@ class Members_AuthController extends Action
 
         $this->auth->clearIdentity();
 
+        $this->_helper->flashMessenger(
+            [
+                'type' => 'info',
+                'text' => 'members.youHaveBeenLoggedOut',
+            ]
+        );
+
         $this->redirect(Configuration::getLocalizedPath('routes.login'));
     }
 
