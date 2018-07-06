@@ -149,7 +149,7 @@ class Member extends Concrete {
 
         $configDocument = \Pimcore\Model\Document::getById($settings->getData());
         $folder = $configDocument->getPath();
-        $lang = strtoupper($this->getDebtor()->getCountryregioncode());
+        $lang = strtoupper($this->getDebtor()->getCountryregioncode()->getCountry_short());
         $fullPath = $folder . $lang;
         $emailTemplate = \Pimcore\Model\Document::getByPath($fullPath);
 
