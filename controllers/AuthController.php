@@ -214,6 +214,9 @@ class Members_AuthController extends Action
             ]
         );
 
+        $environment = \OnlineShop\Framework\Factory::getInstance()->getEnvironment();
+        $environment->clearEnvironment();
+        
         $this->redirect(Configuration::getLocalizedPath('routes.login'));
     }
 
